@@ -7,6 +7,24 @@ Music notation and composition software
 
 MuseScore Studio is an open source and free music notation software. For support, contribution, and bug reports visit MuseScore.org. Fork and make pull requests!
 
+## MuseScore Lite (This Fork)
+
+This repository is maintained as a lightweight, offline-first variant focused on local score creation, editing, playback, and export.
+
+### Goals
+
+- Keep core notation, playback, parts, and print/export workflows
+- Reduce app size and background complexity
+- Remove online-platform-centric UI and code paths
+
+### Lite changes
+
+- Removed/hidden online service entry points (for example publish/share/account-oriented actions)
+- Removed sidebar emphasis on cloud-oriented sections such as Learn, MuseSounds, and My Account
+- Kept local-first workflows: open/save, notation editing, playback, parts, and PDF/music file export
+- Renamed macOS app bundle output to `MuseScore Lite 4.app`
+- Updated macOS packaging to use bundled Qt/runtime libraries consistently so installed apps run without Homebrew runtime linkage
+
 ## Features
 
 - WYSIWYG design, notes are entered on a "virtual notepaper"

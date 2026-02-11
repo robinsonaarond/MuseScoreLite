@@ -236,11 +236,20 @@ qt_add_executable(MuseScoreStudio
     ${APP_SRC}
 )
 
+# Keep compatibility with existing build scripts that invoke `--target mscore`.
+add_custom_target(mscore DEPENDS MuseScoreStudio)
+
 ###########################################
 # Setting target properties
 ###########################################
 
 set_target_properties(MuseScoreStudio PROPERTIES OUTPUT_NAME ${EXECUTABLE_NAME})
+
+if (OS_IS_MAC)
+    set_target_properties(MuseScoreStudio PROPERTIES
+        OUTPUT_NAME "MuseScore Lite 4"
+    )
+endif()
 
 if (MUSE_ENABLE_UNIT_TESTS_CODE_COVERAGE)
     set(COVERAGE_FLAGS -fprofile-arcs -ftest-coverage --coverage)

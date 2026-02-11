@@ -25,7 +25,6 @@ import QtQuick.Layouts
 import Muse.Ui
 import Muse.UiComponents
 import MuseScore.Project
-import Muse.Cloud
 
 import "internal/ScoresPage"
 
@@ -157,14 +156,6 @@ FocusScope {
                 navigation.panel: navTabPanel
                 navigation.column: 1
             }
-
-            StyledTabButton {
-                text: qsTrc("project", "My online scores")
-
-                navigation.name: "MyOnlineScores"
-                navigation.panel: navTabPanel
-                navigation.column: 2
-            }
         }
 
         NavigationPanel {
@@ -177,23 +168,10 @@ FocusScope {
             accessible.name: qsTrc("project", "View buttons")
         }
 
-        FlatButton {
-            id: refreshButton
-
-            visible: tabBar.currentIndex === 1
-
-            navigation.panel: viewButtonsNavPanel
-            navigation.order: 1
-
-            icon: IconCode.UPDATE
-            text: qsTrc("project", "Refresh")
-            orientation: Qt.Horizontal
-        }
-
         RadioButtonGroup {
             id: viewTypeRadioButtons
 
-            property int navigationOrderStart: refreshButton.navigation.order + 1
+            property int navigationOrderStart: 1
 
             implicitHeight: ui.theme.defaultButtonSize
 
@@ -238,7 +216,7 @@ FocusScope {
                 return null
             }
 
-            return [newAndRecentComp, onlineScoresComp][tabBar.currentIndex]
+            return newAndRecentComp
         }
     }
 
@@ -267,40 +245,6 @@ FocusScope {
         }
     }
 
-    Component {
-        id: onlineScoresComp
-
-        CloudScoresView {
-            id: cloudScoresView
-            anchors.fill: parent
-
-            viewType: scoresPageModel.viewType
-            searchText: searchField.searchText
-
-            backgroundColor: background.color
-            sideMargin: prv.sideMargin
-
-            navigationSection: navSec
-            navigationOrder: 4
-
-            onCreateNewScoreRequested: {
-                scoresPageModel.createNewScore()
-            }
-
-            onOpenScoreRequested: function(scorePath, displayName) {
-                Qt.callLater(scoresPageModel.openScore, scorePath, displayName)
-            }
-
-            Connections {
-                target: refreshButton
-
-                function onClicked() {
-                    cloudScoresView.refresh()
-                }
-            }
-        }
-    }
-
     Rectangle {
         id: buttonsPanel
 
@@ -322,26 +266,9 @@ FocusScope {
             accessible.name: qsTrc("project", "Scores actions")
         }
 
-        FlatButton {
+        Row {
             anchors.left: parent.left
             anchors.leftMargin: prv.sideMargin
-            anchors.verticalCenter: parent.verticalCenter
-
-            navigation.name: "ScoreManager"
-            navigation.panel: navBottomPanel
-            navigation.column: 1
-
-            minWidth: 216
-            text: qsTrc("project", "Score manager (online)")
-
-            onClicked: {
-                scoresPageModel.openScoreManager()
-            }
-        }
-
-        Row {
-            anchors.right : parent.right
-            anchors.rightMargin: prv.sideMargin
             anchors.verticalCenter: parent.verticalCenter
 
             spacing: 12
@@ -349,7 +276,7 @@ FocusScope {
             FlatButton {
                 navigation.name: "NewScore"
                 navigation.panel: navBottomPanel
-                navigation.column: 2
+                navigation.column: 1
 
                 text: qsTrc("project", "New")
 
@@ -361,7 +288,7 @@ FocusScope {
             FlatButton {
                 navigation.name: "Open other Score"
                 navigation.panel: navBottomPanel
-                navigation.column: 3
+                navigation.column: 2
 
                 text: qsTrc("project", "Open other…")
 

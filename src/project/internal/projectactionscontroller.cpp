@@ -82,14 +82,9 @@ void ProjectActionsController::init()
     dispatcher()->reg(this, "file-save-as", [this]() { saveProject(SaveMode::SaveAs); });
     dispatcher()->reg(this, "file-save-a-copy", [this]() { saveProject(SaveMode::SaveCopy); });
     dispatcher()->reg(this, "file-save-selection", [this]() { saveProject(SaveMode::SaveSelection, SaveLocationType::Local); });
-    dispatcher()->reg(this, "file-save-to-cloud", [this]() { saveProject(SaveMode::Save, SaveLocationType::Cloud); });
     dispatcher()->reg(this, "file-save-at", [this](const ActionData& args) { saveProjectAt(args); });
 
-    dispatcher()->reg(this, "file-publish", this, &ProjectActionsController::publish);
-    dispatcher()->reg(this, "file-share-audio", this, &ProjectActionsController::shareAudio);
-
     dispatcher()->reg(this, "file-export", this, &ProjectActionsController::exportScore);
-    dispatcher()->reg(this, "file-import-pdf", this, &ProjectActionsController::importPdf);
 
     dispatcher()->reg(this, "print", this, &ProjectActionsController::printScore);
 
@@ -131,18 +126,11 @@ bool ProjectActionsController::canReceiveAction(const ActionCode& code) const
         static const std::unordered_set<ActionCode> DONT_REQUIRE_OPEN_PROJECT {
             "file-new",
             "file-open",
-            "file-import-pdf",
             "continue-last-session",
             "clear-recent",
         };
 
         return muse::contains(DONT_REQUIRE_OPEN_PROJECT, code);
-    }
-
-    if (m_isProjectUploading) {
-        if (code == "file-save-to-cloud" || code == "file-publish") {
-            return false;
-        }
     }
 
     return true;
@@ -796,16 +784,16 @@ bool ProjectActionsController::saveProject(SaveMode saveMode, SaveLocationType s
 
     INotationProjectPtr project = currentNotationProject();
 
+    // MuseScore Lite is local-only: force all save flows to local storage.
+    if (saveLocationType == SaveLocationType::Cloud || project->isCloudProject()) {
+        saveLocationType = SaveLocationType::Local;
+    }
+
     const bool isExistingSave = saveMode == SaveMode::Save && !project->isNewlyCreated();
-    const bool wantNewCloudSave = saveLocationType == SaveLocationType::Cloud && !project->isCloudProject();
+    const bool wantNewCloudSave = false;
     if (isExistingSave && !wantNewCloudSave) {
         // Under these conditions, we can save without asking...
-        SaveLocation location;
-        if (project->isCloudProject()) {
-            location = SaveLocation(SaveLocationType::Cloud, project->cloudInfo());
-        } else {
-            location = SaveLocation(SaveLocationType::Local);
-        }
+        SaveLocation location(SaveLocationType::Local);
         return saveProjectAt(location, saveMode, force);
     }
 
@@ -1617,17 +1605,7 @@ void ProjectActionsController::showErrCorruptedScoreCannotBeSaved(const SaveLoca
     IInteractive::Text text;
     text.text = muse::trc("project", "This score is corrupted. You can get help for this issue on MuseScore.org.");
     text.detailedText = errorText;
-
-    IInteractive::ButtonData getHelpBtn(IInteractive::Button::CustomButton, muse::trc("project", "Get help"));
-
-    interactive()->error(title, text, {
-        getHelpBtn,
-        interactive()->buttonData(IInteractive::Button::Ok)
-    }).onResolve(this, [this, getHelpBtn](const IInteractive::Result& res) {
-        if (res.isButton(getHelpBtn.btn)) {
-            interactive()->openUrl(configuration()->supportForumUrl());
-        }
-    });
+    interactive()->error(title, text);
 }
 
 void ProjectActionsController::warnScoreCouldnotBeSaved(const Ret& ret)
@@ -1649,17 +1627,14 @@ int ProjectActionsController::warnScoreHasBecomeCorruptedAfterSave(const Ret& re
 {
     const QString errDetailsMessage = QString::fromStdString(ret.toString()).toHtmlEscaped();
 
-    const QString supportForumLink = String("<a href=\"%1\" style=\"text-decoration: none\">MuseScore.org</a>")
-                                     .arg(configuration()->supportForumUrl().toString());
-
     const std::string title = muse::trc("project/save", "An error occurred while saving your score");
 
     const std::string body = muse::qtrc("project/save",
                                         "To preserve your score, try saving it again. "
                                         "If this message still appears, please save your score as new copy. "
-                                        "You can also get help for this issue on %1.<br/><br/>"
-                                        "Error details (please cite when asking for support): %2")
-                             .arg(supportForumLink, errDetailsMessage)
+                                        "<br/><br/>"
+                                        "Error details (please cite when asking for support): %1")
+                             .arg(errDetailsMessage)
                              .toStdString();
 
     IInteractive::ButtonDatas buttons;
@@ -1805,17 +1780,7 @@ void ProjectActionsController::warnProjectCriticallyCorrupted(const String& proj
     IInteractive::Text text;
     text.text = muse::trc("project", "Get help for this issue on MuseScore.org.");
     text.detailedText = errorText;
-
-    IInteractive::ButtonData getHelpBtn(IInteractive::Button::CustomButton, muse::trc("project", "Get help"), true /*accent*/);
-
-    interactive()->error(title, text, {
-        interactive()->buttonData(IInteractive::Button::Cancel),
-        getHelpBtn
-    }, getHelpBtn.btn).onResolve(this, [this, getHelpBtn](const IInteractive::Result& res) {
-        if (res.isButton(getHelpBtn.btn)) {
-            interactive()->openUrl(configuration()->supportForumUrl());
-        }
-    });
+    interactive()->error(title, text);
 }
 
 void ProjectActionsController::warnProjectCannotBeOpened(const Ret& ret, const muse::io::path_t& filepath)
@@ -1844,7 +1809,8 @@ void ProjectActionsController::warnProjectCannotBeOpened(const Ret& ret, const m
 
 void ProjectActionsController::importPdf()
 {
-    interactive()->openUrl("https://musescore.com/import");
+    interactive()->info(muse::trc("project", "Import PDF is unavailable in MuseScore Lite"),
+                        muse::trc("project", "PDF import requires online services and has been removed."));
 }
 
 void ProjectActionsController::clearRecentScores()

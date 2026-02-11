@@ -40,7 +40,6 @@ static constexpr muse::ui::UiContext UiCtxBrailleFocused = muse::ui::UiCtxBraill
 static constexpr muse::ui::UiContext UiCtxDialogOpened = muse::ui::UiCtxDialogOpened;
 
 // application-specific contexts
-static constexpr muse::ui::UiContext UiCtxPublishOpened = "UiCtxPublishOpened";
 static constexpr muse::ui::UiContext UiCtxDevToolsOpened = "UiCtxDevToolsOpened";
 }
 

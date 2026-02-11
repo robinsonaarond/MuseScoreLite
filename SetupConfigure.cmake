@@ -72,7 +72,8 @@ endif()
 # Setup paths
 ###########################################
 if (OS_IS_MAC)
-    set(MUSE_APP_INSTALL_RESOURCES_LOCATION "mscore.app/Contents/Resources")
+    set(MUSE_APP_BUNDLE_NAME "MuseScore Lite 4")
+    set(MUSE_APP_INSTALL_RESOURCES_LOCATION "${MUSE_APP_BUNDLE_NAME}.app/Contents/Resources")
 elseif (OS_IS_WIN)
     set(MUSE_APP_INSTALL_RESOURCES_LOCATION ".")
 else()
@@ -89,6 +90,22 @@ if(BUILD_CONFIGURATION STREQUAL "APP")
     set(MUE_CONFIGURATION_IS_APP ON)
     set(MUE_GENERAL_APP ON)
     set(MUSE_MODULE_AUDIO_WORKMODE 3) # driver callback + worker rpc
+
+    # MuseScore Lite defaults: keep notation/edit/playback local-only.
+    set(MUE_BUILD_MUSESOUNDS_MODULE OFF)
+    set(MUE_BUILD_MUSESOUNDS_QML OFF)
+    set(MUE_BUILD_IMPEXP_MNX_MODULE OFF)
+
+    set(MUSE_MODULE_CLOUD OFF)
+    set(MUSE_MODULE_CLOUD_MUSESCORECOM OFF)
+    set(MUSE_MODULE_LEARN OFF)
+    set(MUSE_MODULE_MUSESAMPLER OFF)
+    set(MUSE_MODULE_NETWORK OFF)
+    set(MUSE_MODULE_UPDATE OFF)
+
+    # Avoid build-time network fetches in the default desktop profile.
+    set(MUE_DOWNLOAD_SOUNDFONT OFF)
+    set(MUE_COMPILE_USE_SYSTEM_HARFBUZZ ON)
 endif()
 
 if(BUILD_CONFIGURATION STREQUAL "APP-PORTABLE")
@@ -96,6 +113,20 @@ if(BUILD_CONFIGURATION STREQUAL "APP-PORTABLE")
     set(MUE_GENERAL_APP ON)
     set(MUSE_MODULE_AUDIO_WORKMODE 3) # driver callback + worker rpc
     set(WIN_PORTABLE ON)
+
+    set(MUE_BUILD_MUSESOUNDS_MODULE OFF)
+    set(MUE_BUILD_MUSESOUNDS_QML OFF)
+    set(MUE_BUILD_IMPEXP_MNX_MODULE OFF)
+
+    set(MUSE_MODULE_CLOUD OFF)
+    set(MUSE_MODULE_CLOUD_MUSESCORECOM OFF)
+    set(MUSE_MODULE_LEARN OFF)
+    set(MUSE_MODULE_MUSESAMPLER OFF)
+    set(MUSE_MODULE_NETWORK OFF)
+    set(MUSE_MODULE_UPDATE OFF)
+
+    set(MUE_DOWNLOAD_SOUNDFONT OFF)
+    set(MUE_COMPILE_USE_SYSTEM_HARFBUZZ ON)
 endif()
 
 if (WIN_PORTABLE)

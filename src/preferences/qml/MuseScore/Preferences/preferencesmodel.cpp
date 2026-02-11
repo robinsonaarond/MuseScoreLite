@@ -20,6 +20,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include <QApplication>
+#include <algorithm>
 
 #include "preferencesmodel.h"
 
@@ -161,9 +162,6 @@ void PreferencesModel::load(const QString& currentPageId)
         makeItem("canvas", QT_TRANSLATE_NOOP("preferences", "Canvas"), IconCode::Code::NEW_FILE,
                  "Preferences/CanvasPreferencesPage.qml"),
 
-        makeItem("cloud", QT_TRANSLATE_NOOP("preferences", "Save & publish"), IconCode::Code::CLOUD_FILE,
-                 "Preferences/SaveAndPublishPreferencesPage.qml"),
-
         makeItem("note-input", QT_TRANSLATE_NOOP("preferences", "Note input"), IconCode::Code::EDIT,
                  "Preferences/NoteInputPreferencesPage.qml"),
 
@@ -185,9 +183,6 @@ void PreferencesModel::load(const QString& currentPageId)
         makeItem("shortcuts", QT_TRANSLATE_NOOP("preferences", "Shortcuts"), IconCode::Code::SHORTCUTS,
                  "Preferences/ShortcutsPreferencesPage.qml"),
 
-        makeItem("update", QT_TRANSLATE_NOOP("preferences", "Update"), IconCode::Code::UPDATE,
-                 "Preferences/UpdatePreferencesPage.qml"),
-
         makeItem("general-folders", QT_TRANSLATE_NOOP("preferences", "Folders"), IconCode::Code::OPEN_FILE,
                  "Preferences/FoldersPreferencesPage.qml"),
 
@@ -197,6 +192,17 @@ void PreferencesModel::load(const QString& currentPageId)
         makeItem("braille", QT_TRANSLATE_NOOP("preferences", "Braille"), IconCode::Code::BRAILLE,
                  "Preferences/BraillePreferencesPage.qml")
     };
+
+    const QString selectedPageId = this->currentPageId();
+    const bool hasCurrentPage = std::any_of(items.cbegin(), items.cend(), [&selectedPageId](const PreferencePageItem* item) {
+        return item->id() == selectedPageId;
+    });
+    if (!hasCurrentPage) {
+        setCurrentPageId("general");
+        for (PreferencePageItem* item : items) {
+            item->setExpanded(item->id() == "general");
+        }
+    }
 
     for (PreferencePageItem* item: items) {
         m_rootItem->appendChild(item);

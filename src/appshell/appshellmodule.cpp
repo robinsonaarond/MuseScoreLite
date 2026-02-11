@@ -78,7 +78,6 @@ void AppShellModule::resolveImports()
         ir->registerPageUri(Uri("musescore://home"));
         ir->registerPageUri(Uri("musescore://notation"));
         ir->registerPageUri(Uri("musescore://sequencer"));
-        ir->registerPageUri(Uri("musescore://publish"));
         ir->registerPageUri(Uri("musescore://devtools"));
 
         ir->registerQmlUri(Uri("musescore://about/musescore"), "MuseScore.AppShell", "AboutDialog");

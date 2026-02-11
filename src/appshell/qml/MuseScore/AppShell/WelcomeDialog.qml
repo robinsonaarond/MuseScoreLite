@@ -49,13 +49,15 @@ StyledDialogView {
         readonly property int imageWidth: 572
         readonly property string titleText: model.currentItem ? model.currentItem.title : ""
         readonly property string descText: model.currentItem ? model.currentItem.description : ""
+        readonly property string destinationUrl: model.currentItem ? model.currentItem.destinationUrl : ""
+        readonly property bool hasDestination: destinationUrl.length > 0
     }
 
     function openCurrent() {
-        if (!model.currentItem) {
+        if (!model.currentItem || !prv.hasDestination) {
             return
         }
-        api.launcher.openUrl(model.currentItem.destinationUrl)
+        api.launcher.openUrl(prv.destinationUrl)
     }
 
     Column {
@@ -143,6 +145,7 @@ StyledDialogView {
 
                 MouseArea {
                     anchors.fill: image
+                    enabled: prv.hasDestination
                     onClicked: {
                         root.openCurrent()
                     }
@@ -201,6 +204,8 @@ StyledDialogView {
             text: model.currentItem ? model.currentItem.buttonText : ""
             textFont: ui.theme.tabBoldFont
             accentButton: true
+            visible: prv.hasDestination
+            enabled: prv.hasDestination
 
             navigation.panel: NavigationPanel {
                 name: "ContentButton"

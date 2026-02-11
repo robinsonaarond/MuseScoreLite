@@ -134,33 +134,13 @@ RetVal<muse::io::path_t> OpenSaveProjectScenario::askLocalPath(INotationProjectP
 
 RetVal<SaveLocationType> OpenSaveProjectScenario::saveLocationType() const
 {
-    bool shouldAsk = configuration()->shouldAskSaveLocationType();
-    SaveLocationType lastUsed = configuration()->lastUsedSaveLocationType();
-    if (!shouldAsk && lastUsed != SaveLocationType::Undefined) {
-        return RetVal<SaveLocationType>::make_ok(lastUsed);
-    }
-
-    return askSaveLocationType();
+    configuration()->setLastUsedSaveLocationType(SaveLocationType::Local);
+    return RetVal<SaveLocationType>::make_ok(SaveLocationType::Local);
 }
 
 RetVal<SaveLocationType> OpenSaveProjectScenario::askSaveLocationType() const
 {
-    UriQuery query("musescore://project/asksavelocationtype");
-    bool shouldAsk = configuration()->shouldAskSaveLocationType();
-    query.addParam("askAgain", Val(shouldAsk));
-
-    RetVal<Val> rv = interactive()->openSync(query);
-    if (!rv.ret) {
-        return rv.ret;
-    }
-
-    QVariantMap vals = rv.val.toQVariant().toMap();
-
-    bool askAgain = vals["askAgain"].toBool();
-    configuration()->setShouldAskSaveLocationType(askAgain);
-
-    SaveLocationType type = static_cast<SaveLocationType>(vals["saveLocationType"].toInt());
-    return RetVal<SaveLocationType>::make_ok(type);
+    return RetVal<SaveLocationType>::make_ok(SaveLocationType::Local);
 }
 
 RetVal<CloudProjectInfo> OpenSaveProjectScenario::askCloudLocation(INotationProjectPtr project, SaveMode mode) const

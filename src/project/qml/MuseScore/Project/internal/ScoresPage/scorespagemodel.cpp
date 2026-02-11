@@ -56,17 +56,12 @@ void ScoresPageModel::openScoreManager()
 
 int ScoresPageModel::tabIndex() const
 {
-    return configuration()->homeScoresPageTabIndex();
+    return 0;
 }
 
 void ScoresPageModel::setTabIndex(int index)
 {
-    if (index == tabIndex()) {
-        return;
-    }
-
-    configuration()->setHomeScoresPageTabIndex(index);
-    emit tabIndexChanged();
+    Q_UNUSED(index)
 }
 
 ScoresPageModel::ViewType ScoresPageModel::viewType() const

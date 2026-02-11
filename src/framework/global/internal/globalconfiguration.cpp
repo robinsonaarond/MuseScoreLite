@@ -22,8 +22,10 @@
 #include "globalconfiguration.h"
 
 #include <QString>
+#include <QStringList>
 #include <QStandardPaths>
 #include <QDir>
+#include <QFileInfo>
 #include <QCoreApplication>
 
 #include "settings.h"
@@ -72,8 +74,33 @@ QString GlobalConfiguration::resolveAppDataPath() const
     QDir dir(QCoreApplication::applicationDirPath() + QString("/../"));
     return dir.absolutePath() + "/";
 #elif defined(Q_OS_MAC)
-    QDir dir(QCoreApplication::applicationDirPath() + QString("/../Resources"));
-    return dir.absolutePath() + "/";
+    auto hasCoreAssets = [](const QDir& root) {
+        return QFileInfo::exists(root.filePath("instruments/instruments.xml"))
+               && (QFileInfo::exists(root.filePath("sound/MS Basic.sf3"))
+                   || QFileInfo::exists(root.filePath("sound/FluidR3Mono_GM.sf3")));
+    };
+
+    QDir resourcesDir(QCoreApplication::applicationDirPath() + QString("/../Resources"));
+    if (resourcesDir.exists() && hasCoreAssets(resourcesDir)) {
+        return resourcesDir.absolutePath() + "/";
+    }
+
+    // Development fallback: when running from a build tree on macOS, resources
+    // may not be copied into the app bundle. Prefer build/share, then source/share.
+    static const QStringList devShareCandidates = {
+        QString("/../../../../../share"),
+        QString("/../../../../../../../share")
+    };
+
+    for (const QString& candidate : devShareCandidates) {
+        QDir devShareDir(QCoreApplication::applicationDirPath() + candidate);
+        if (devShareDir.exists() && hasCoreAssets(devShareDir)) {
+            return devShareDir.absolutePath() + "/";
+        }
+    }
+
+    // Keep previous behavior as the final fallback.
+    return resourcesDir.absolutePath() + "/";
 #elif defined(Q_OS_WASM)
     return "/files/share";
 #else

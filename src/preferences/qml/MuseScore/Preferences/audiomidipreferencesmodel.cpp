@@ -138,11 +138,7 @@ void AudioMidiPreferencesModel::restartAudioAndMidiDevices()
 
 bool AudioMidiPreferencesModel::onlineSoundsSectionVisible() const
 {
-#if defined(Q_OS_WIN) || defined(Q_OS_MACOS)
-    return true;
-#else
     return false;
-#endif
 }
 
 QVariantList AudioMidiPreferencesModel::midiInputDevices() const

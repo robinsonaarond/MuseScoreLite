@@ -116,7 +116,7 @@ void CommandLineParser::init()
 
     m_parser.addOption(QCommandLineOption("sound-profile",
                                           "Use with '-o <file>.mp3' or with '-j <file>', override the sound profile in the given score(s). "
-                                          "Possible values: \"MuseScore Basic\", \"MuseSounds\"", "sound-profile"));
+                                          "Possible value: \"MuseScore Basic\"", "sound-profile"));
 
     m_parser.addOption(QCommandLineOption("transpose",
                                           "Transpose the given score before executing the '-o' options",

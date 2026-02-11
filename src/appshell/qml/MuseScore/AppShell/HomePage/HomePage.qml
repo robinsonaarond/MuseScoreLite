@@ -28,16 +28,12 @@ import Muse.Ui
 import Muse.UiComponents
 import Muse.Dock
 
-import Muse.Cloud
-import Muse.Learn
 import MuseScore.Project
-import MuseScore.MuseSounds
 
 DockPage {
     id: root
 
     property string section: "scores"
-    property string subSection: ""
 
     property var window: null
 
@@ -47,10 +43,6 @@ DockPage {
     onSetParamsRequested: function(params) {
         if (Boolean(params["section"])) {
             setCurrentCentral(params["section"])
-
-            if (Boolean(params["subSection"])) {
-                subSection = params["subSection"]
-            }
         }
     }
 
@@ -63,15 +55,20 @@ DockPage {
             return
         }
 
-        section = name
-
         switch (name) {
-        case "scores": root.central = scoresComp; break
-        case "plugins": root.central = extensionsComp; break // backward compatibility
-        case "extensions": root.central = extensionsComp; break
-        case "musesounds": root.central = museSoundsComp; break
-        case "learn": root.central = learnComp; break
-        case "account": root.central = accountComp; break
+        case "scores":
+            section = "scores"
+            root.central = scoresComp
+            break
+        case "plugins": // backward compatibility
+        case "extensions":
+            section = "extensions"
+            root.central = extensionsComp
+            break
+        default:
+            section = "scores"
+            root.central = scoresComp
+            break
         }
     }
 
@@ -109,12 +106,6 @@ DockPage {
     central: scoresComp
 
     Component {
-        id: accountComp
-
-        AccountPage {}
-    }
-
-    Component {
         id: scoresComp
 
         ScoresPage {}
@@ -124,19 +115,5 @@ DockPage {
         id: extensionsComp
 
         PluginsPage {}
-    }
-
-    Component {
-        id: museSoundsComp
-
-        MuseSoundsPage {}
-    }
-
-    Component {
-        id: learnComp
-
-        LearnPage {
-            section: root.subSection
-        }
     }
 }

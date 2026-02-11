@@ -75,22 +75,6 @@ const UiActionList ApplicationUiActions::m_actions = {
              mu::context::CTX_ANY,
              TranslatableString("action", "About &MusicXML…")
              ),
-    UiAction("online-handbook",
-             mu::context::UiCtxAny,
-             mu::context::CTX_ANY,
-             TranslatableString("action", "Online &handbook"),
-             TranslatableString("action", "Open online handbook")
-             ),
-    UiAction("ask-help",
-             mu::context::UiCtxAny,
-             mu::context::CTX_ANY,
-             TranslatableString("action", "As&k for help")
-             ),
-    UiAction("accessibility-statement",
-             mu::context::UiCtxAny,
-             mu::context::CTX_ANY,
-             TranslatableString("action", "Accessibility &statement")
-             ),
     UiAction("revert-factory",
              mu::context::UiCtxAny,
              mu::context::CTX_ANY,
