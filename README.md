@@ -29,11 +29,11 @@ This repository is maintained as a lightweight, offline-first variant focused on
 
 **MuseScore Standard**
 
-![MuseScore Standard screenshot](<screenshots/MuseScore - Standard.png>)
+![MuseScore Standard landing screenshot](<screenshots/MuseScore - Standard.png>)
 
 **MuseScore Lite**
 
-![MuseScore Lite screenshot](<screenshots/MuseScore - Lite.png>)
+![MuseScore Lite landing screenshot](<screenshots/MuseScore - Lite.png>)
 
 ## Features
 
