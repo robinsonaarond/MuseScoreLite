@@ -25,6 +25,16 @@ This repository is maintained as a lightweight, offline-first variant focused on
 - Renamed macOS app bundle output to `MuseScore Lite 4.app`
 - Updated macOS packaging to use bundled Qt/runtime libraries consistently so installed apps run without Homebrew runtime linkage
 
+### Screenshots
+
+**MuseScore Lite**
+
+![MuseScore Lite screenshot](<screenshots/MuseScore - Lite.png>)
+
+**MuseScore Standard**
+
+![MuseScore Standard screenshot](<screenshots/MuseScore - Standard.png>)
+
 ## Features
 
 - WYSIWYG design, notes are entered on a "virtual notepaper"
