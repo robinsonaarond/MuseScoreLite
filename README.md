@@ -27,13 +27,13 @@ This repository is maintained as a lightweight, offline-first variant focused on
 
 ### Screenshots
 
-**MuseScore Lite**
-
-![MuseScore Lite screenshot](<screenshots/MuseScore - Lite.png>)
-
 **MuseScore Standard**
 
 ![MuseScore Standard screenshot](<screenshots/MuseScore - Standard.png>)
+
+**MuseScore Lite**
+
+![MuseScore Lite screenshot](<screenshots/MuseScore - Lite.png>)
 
 ## Features
 
